@@ -1,0 +1,31 @@
+# Runtime parameters — read by src/services/runtime_config.py and passed to the
+# graph as Graph(config=...). Separate from config/agent.yaml, which is the
+# static manifest and holds no runtime values.
+#
+# Every value here has a reader. max_retry drives the backbone's retry route;
+# timeout_s is the declared per-call budget carried on the graph config for the
+# hosting runtime; the store_ops block reaches the domain steps through the
+# graph's initial state. Values are bounds-checked on load, so an out-of-range
+# or non-finite entry degrades to the documented default rather than silently
+# changing what a store manager is told.
+
+max_retry: 3
+timeout_s: 30
+
+# Store-operations tuning.
+#
+#   default_language              the language a response is written in when the
+#                                 request names none. Japanese is primary; the
+#                                 head-office record is always Japanese whatever
+#                                 this says.
+#   escalation_history_threshold  how many previously escalated incidents at the
+#                                 same store make an equipment fault recurrent.
+#                                 At or above it the escalation goes to head
+#                                 office; below it, to the maintenance
+#                                 contractor alone.
+#   max_incident_entries          upper bound on the incident history one
+#                                 request summarises.
+store_ops:
+  default_language: "ja"
+  escalation_history_threshold: 1
+  max_incident_entries: 5
